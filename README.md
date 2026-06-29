@@ -1,145 +1,239 @@
-# 🖼️ Image Super-Resolution using SwinIR
+# 🖼️ Image Super-Resolution using SwinIR and ESRT
 
-## 📌 Overview
+A PyTorch implementation of **Single Image Super-Resolution (SISR)** using two state-of-the-art transformer-based architectures:
 
-This project implements **Single Image Super-Resolution (SISR)** using the **SwinIR (Swin Transformer for Image Restoration)** architecture in **PyTorch**. The model learns to reconstruct a high-resolution image from a low-resolution input image by leveraging transformer-based attention mechanisms.
+* **SwinIR (Swin Transformer for Image Restoration)**
+* **ESRT (Efficient Super-Resolution Transformer)**
 
-The project uses the **DIV2K dataset** and performs **4× image upscaling** by generating low-resolution images through bicubic downsampling during training.
-
----
-
-## 🚀 Features
-
-* SwinIR-based Image Super-Resolution
-* Custom PyTorch Dataset & DataLoader
-* Bicubic downsampling for LR-HR pair generation
-* 4× Image Upscaling
-* End-to-End Training Pipeline
-* GPU Training Support
-* Model Checkpoint Saving
-* Image Reconstruction using Transformer Architecture
+This project presents a comparative study of multiple model configurations trained on the **DIV2K** dataset for **2× image super-resolution**.
 
 ---
 
-## 🛠️ Tech Stack
+# 📌 Features
 
-* Python
-* PyTorch
-* Torchvision
-* OpenCV
-* PIL (Pillow)
-* NumPy
-* Matplotlib
-
----
-
-## 📂 Dataset
-
-The model is trained on the **DIV2K High Resolution Dataset**.
-
-* 800 Training Images
-* 100 Validation Images
-
-High-resolution images are resized and converted into low-resolution images using bicubic interpolation to create LR-HR training pairs.
+* Transformer-based image super-resolution
+* Comparison of **6 model configurations**
+* Trained on the DIV2K dataset
+* Configurable model sizes
+* Checkpoint saving during training
+* PSNR and SSIM evaluation
+* PyTorch implementation
 
 ---
 
-## 🏗️ Model Architecture
-
-The project uses **SwinIR**, a Swin Transformer-based architecture designed for image restoration tasks.
-
-Configuration:
-
-* Upscale Factor: **4×**
-* Input Size: **64 × 64**
-* Output Size: **256 × 256**
-* Window Size: **8**
-* Embedding Dimension: **60**
-* Upsampler: **PixelShuffle**
-
----
-
-## ⚙️ Training
-
-The training pipeline consists of:
-
-1. Load HR image
-2. Resize HR image
-3. Generate LR image using bicubic interpolation
-4. Convert images into tensors
-5. Feed LR image into SwinIR
-6. Compute L1 Loss with HR image
-7. Update model using Adam Optimizer
-
-Optimizer:
-
-* Adam
-
-Loss Function:
-
-* L1 Loss
-
-Learning Rate:
-
-* 2e-4
-
----
-
-## 📊 Results
-
-The model successfully learns to reconstruct higher-resolution images from low-resolution inputs.
-
-Example training loss:
+# 📂 Repository Structure
 
 ```
-Epoch 1  : 0.0465
-Epoch 2  : 0.0432
-Epoch 3  : 0.0432
-Epoch 4  : 0.0425
-Epoch 5  : 0.0427
-Epoch 6  : 0.0429
-Epoch 7  : 0.0420
-Epoch 8  : 0.0424
-Epoch 9  : 0.0412
-Epoch 10 : 0.0409
+├── SwinIR_Small.ipynb
+├── SwinIR_Medium.ipynb
+├── SwinIR_Default.ipynb
+│
+├── ESRT_Small.ipynb
+├── ESRT_Medium.ipynb
+├── ESRT_Default.ipynb
+│
+├── checkpoints/
+├── results/
+├── README.md
 ```
-
-The decreasing loss demonstrates that the model effectively learns image reconstruction.
 
 ---
 
-## ▶️ How to Run
+# 🏗️ Models Implemented
 
-1. Clone the repository
+## SwinIR Models
+
+| Model          |  Parameters | Epochs |
+| -------------- | ----------: | -----: |
+| SwinIR Small   | **0.553 M** |     20 |
+| SwinIR Medium  | **0.844 M** |     20 |
+| SwinIR Default | **1.235 M** |     50 |
+
+---
+
+## ESRT Models
+
+| Model        |  Parameters | Epochs |
+| ------------ | ----------: | -----: |
+| ESRT Small   | **0.190 M** |     20 |
+| ESRT Medium  | **0.752 M** |     20 |
+| ESRT Default | **1.686 M** |     20 |
+
+---
+
+# 📂 Dataset
+
+The models were trained using the **DIV2K** dataset.
+
+Dataset statistics:
+
+* **800** Training Images
+* **100** Validation Images
+* **100** Testing Images
+
+Images are downsampled using **Bicubic Interpolation** to generate the corresponding low-resolution images.
+
+Scale Factor:
+
+```
+×2
+```
+
+---
+
+# ⚙️ Training Configuration
+
+| Parameter     | Value    |
+| ------------- | -------- |
+| Framework     | PyTorch  |
+| Optimizer     | Adam     |
+| Loss Function | L1 Loss  |
+| Learning Rate | 2e-4     |
+| Dataset       | DIV2K    |
+| Scale         | ×2       |
+| Device        | CUDA GPU |
+
+---
+
+# 📊 Experimental Results
+
+## SwinIR
+
+| Model   | PSNR      | SSIM       |
+| ------- | --------- | ---------- |
+| Small   | **22.26** | **0.6188** |
+| Medium  | **22.28** | **0.6249** |
+| Default | **22.52** | **0.6331** |
+
+---
+
+## ESRT
+
+| Model   | PSNR      | SSIM       |
+| ------- | --------- | ---------- |
+| Small   | **23.72** | **0.7163** |
+| Medium  | **24.35** | **0.7380** |
+| Default | **24.44** | **0.7499** |
+
+---
+
+## Bicubic Baseline
+
+| Method  | PSNR      | SSIM       |
+| ------- | --------- | ---------- |
+| Bicubic | **23.59** | **0.7030** |
+
+---
+
+# 📈 Performance Comparison
+
+| Model          | Parameters (M) |  PSNR |   SSIM |
+| -------------- | -------------: | ----: | -----: |
+| SwinIR Small   |          0.553 | 22.26 | 0.6188 |
+| SwinIR Medium  |          0.844 | 22.28 | 0.6249 |
+| SwinIR Default |          1.235 | 22.52 | 0.6331 |
+| ESRT Small     |          0.190 | 23.72 | 0.7163 |
+| ESRT Medium    |          0.752 | 24.35 | 0.7380 |
+| ESRT Default   |          1.686 | 24.44 | 0.7499 |
+
+---
+
+# 🚀 How to Run
+
+## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/smruti-123-lang/swinIR.git
+
+cd swinIR
 ```
 
-2. Install dependencies
+---
+
+## 2. Install Dependencies
 
 ```bash
-pip install torch torchvision timm opencv-python pillow matplotlib numpy
+pip install torch torchvision timm matplotlib numpy pillow opencv-python scikit-image
 ```
 
-3. Download the DIV2K dataset and update the dataset path.
+---
 
-4. Run the notebook to train the model.
+## 3. Download the Dataset
+
+Download the DIV2K dataset and update the dataset path in the notebooks.
+
+```
+DIV2K_train_HR/
+DIV2K_train_LR_bicubic/X2/
+```
 
 ---
 
-## 📈 Future Improvements
+## 4. Train the Models
 
-* Train for 50–100 epochs for improved image quality
-* Add PSNR and SSIM evaluation metrics
-* Support real-world low-resolution images
-* Fine-tune larger SwinIR variants
-* Deploy as a web application using Streamlit or Flask
+Run any notebook:
+
+```
+SwinIR_Small.ipynb
+
+SwinIR_Medium.ipynb
+
+SwinIR_Default.ipynb
+
+ESRT_Small.ipynb
+
+ESRT_Medium.ipynb
+
+ESRT_Default.ipynb
+```
 
 ---
 
-## 👩‍💻 Author
+# 📚 Evaluation Metrics
+
+The models are evaluated using:
+
+* **PSNR (Peak Signal-to-Noise Ratio)**
+* **SSIM (Structural Similarity Index Measure)**
+
+These metrics measure reconstruction quality by comparing the generated high-resolution image with the ground-truth image.
+
+---
+
+# 🔮 Future Improvements
+
+* Train all models for 100+ epochs
+* Support ×4 and ×8 super-resolution
+* Add inference script for custom images
+* Export trained models to ONNX
+* Deploy using Streamlit or Flask
+* Compare with ESRGAN and RCAN
+
+---
+
+# 🛠️ Technologies Used
+
+* Python
+* PyTorch
+* OpenCV
+* NumPy
+* Matplotlib
+* torchvision
+* timm
+* scikit-image
+
+---
+
+# 👩‍💻 Author
 
 **Smruti Misra**
 
+Electronics and Communication Engineering
+
 GitHub: https://github.com/smruti-123-lang
+
+---
+
+# ⭐ Acknowledgement
+
+This project was completed as part of a **B.Tech Internship** on **Transformer-Based Image Super-Resolution**. It focuses on implementing and comparing SwinIR and ESRT architectures using the DIV2K dataset under identical experimental settings.
